@@ -1,20 +1,32 @@
-import { Task } from "../../components/Task"
-import type { ITask } from "../../components/Task/types"
+import { StatusSection } from '../../components/StatusSection'
+import { Task } from '../../components/Task'
+import type { ITask } from '../../components/Task/types'
 
 export const Hero = () => {
+	const TASK = {
+		task: {
+			title: 'Test',
+			description:
+				'Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque ratione quaerat, in debitis itaque eaque libero ea iure quam ex accusantium hic ad eos laborum reprehenderit laboriosam quo maiores voluptatum.',
+			status: 'todo',
+			date: new Date(),
+		},
+	} as ITask
 
-    const TASK = {
-        task: {
-            title: 'Test',
-            description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque ratione quaerat, in debitis itaque eaque libero ea iure quam ex accusantium hic ad eos laborum reprehenderit laboriosam quo maiores voluptatum.',
-            status: 'todo',
-            date: new Date()
-        }
-    } as ITask
-
-    return (
-        <section className="flex mt-[10rem]">
-            <Task task={TASK.task}/> 
-        </section>
-    )
+	return (
+		<section className='w-full flex mt-[10rem] flex-row justify-around gap-5'>
+			<StatusSection status='To-Do'>
+				<Task task={TASK.task} />
+				<Task task={TASK.task} />
+			</StatusSection>
+			<StatusSection status='In Progress'>
+				<Task task={TASK.task} />
+				<Task task={TASK.task} />
+			</StatusSection>
+			<StatusSection status='Done'>
+				<Task task={TASK.task} />
+				<Task task={TASK.task} />
+			</StatusSection>
+		</section>
+	)
 }
