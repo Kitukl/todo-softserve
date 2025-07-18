@@ -1,8 +1,6 @@
 export interface ITask {
-    task: {
-        title: string
-        description: string
-        status: string
-        date: Date
-    }
+	title: string
+	description: string
+	status: 'Todo' | 'In Progress' | 'Done'
+	date: Date
 }
