@@ -7,7 +7,7 @@ export const Task = ({task}: ITask) => {
             <Card title={task.title} variant="outlined">
                 <div className="flex flex-col gap-3">
                     <div className="line-clamp-2">{task.description}</div>
-                    <span className="text-red-500">Delete</span>
+                    <span className="text-red-500 hover:text-red-800 duration-350 hover:cursor-pointer">Delete</span>
                 </div>
             </Card>
         </div>
