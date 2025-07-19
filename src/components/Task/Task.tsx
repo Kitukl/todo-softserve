@@ -1,40 +1,34 @@
 import Card from 'antd/es/card/Card'
 import Modal from 'antd/es/modal/Modal'
 import { useRef, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { deleteTask, editTask } from '../../redux/slice/slice'
 import { AddTaskForm } from '../AddTaskForm/AddTaskForm'
 import type { ITask } from './types'
 
-export const Task = ({ title, description, status, date }: ITask) => {
+export const Task = ({ id, title, description, status, date }: ITask) => {
 	const [isOpen, setIsOpen] = useState<boolean>(false)
-
-	const [newTitle, setTitle] = useState<string>(title)
-	const [newDescription, setDescription] = useState<string>(description)
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [newStatus, setStatus] = useState<'Todo' | 'In Progress' | 'Done'>(
-		status
-	)
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [newDate, setDate] = useState<Date>(date)
+	const dispatch = useDispatch()
 
 	const handleCancel = () => setIsOpen(false)
 	const handleShow = () => setIsOpen(true)
+	const handleDelete = () => dispatch(deleteTask(id))
 	const handleSubmit = (values: ITask) => {
-		console.log('Надіслано на бек редагування:', values)
-		setTitle(values.title)
-		setDescription(values.description)
-		setStatus(values.status)
-		setDate(values.date)
+		dispatch(editTask({ ...values, id }))
 		setIsOpen(false)
 	}
 	const formRef = useRef<{ submit: () => void }>(null)
 
 	return (
 		<div className='w-[20rem]'>
-			<Card title={newTitle} variant='outlined'>
+			<Card title={title} variant='outlined'>
 				<div className='flex flex-col gap-3'>
-					<div className='line-clamp-2'>{newDescription}</div>
+					<div className='line-clamp-2'>{description}</div>
 					<div className='flex flex-row gap-10'>
-						<span className='text-red-500 hover:text-red-800 duration-350 hover:cursor-pointer'>
+						<span
+							className='text-red-500 hover:text-red-800 duration-350 hover:cursor-pointer'
+							onClick={handleDelete}
+						>
 							Видалити
 						</span>
 						<span
@@ -47,14 +41,18 @@ export const Task = ({ title, description, status, date }: ITask) => {
 				</div>
 			</Card>
 			<Modal
-				title='Додати завдання'
+				title='Редагувати завдання'
 				open={isOpen}
 				closeIcon={<span aria-label='Custom Close Button'>×</span>}
 				onOk={() => formRef.current?.submit()}
 				okText='Зберегти'
 				onCancel={handleCancel}
 			>
-				<AddTaskForm submit={handleSubmit} ref={formRef} />
+				<AddTaskForm
+					submit={handleSubmit}
+					ref={formRef}
+					initialValues={{ id, title, description, status, date }}
+				/>
 			</Modal>
 		</div>
 	)

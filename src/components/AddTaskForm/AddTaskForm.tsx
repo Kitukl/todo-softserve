@@ -1,12 +1,28 @@
 import { DatePicker, Form, Input, Select } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import TextArea from 'antd/es/input/TextArea'
-import { forwardRef, useImperativeHandle } from 'react'
+import { forwardRef, useEffect, useImperativeHandle } from 'react'
 import type { ITask } from '../Task/types'
 
+interface AddTaskFormProps {
+	submit: (values: ITask) => void
+	initialValues?: Partial<ITask>
+}
+
 export const AddTaskForm = forwardRef(
-	({ submit }: { submit: (values: ITask) => void }, ref) => {
+	({ submit, initialValues }: AddTaskFormProps, ref) => {
 		const [form] = useForm<ITask>()
+
+		useEffect(() => {
+			if (initialValues) {
+				form.setFieldsValue({
+					...initialValues,
+					date: initialValues.date ? initialValues.date : undefined,
+				})
+			} else {
+				form.resetFields()
+			}
+		}, [initialValues, form])
 
 		const handleFinish = (values: ITask) => {
 			submit(values)
@@ -60,9 +76,9 @@ export const AddTaskForm = forwardRef(
 					rules={[{ required: true, message: 'Оберіть статус завдання!' }]}
 				>
 					<Select placeholder='Статус завдання'>
-						<Select.Option value='todo'>To Do</Select.Option>
-						<Select.Option value='in_progress'>In Progress</Select.Option>
-						<Select.Option value='done'>Done</Select.Option>
+						<Select.Option value='Todo'>To Do</Select.Option>
+						<Select.Option value='In Progress'>In Progress</Select.Option>
+						<Select.Option value='Done'>Done</Select.Option>
 					</Select>
 				</Form.Item>
 
