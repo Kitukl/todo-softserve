@@ -2,20 +2,21 @@ import Card from 'antd/es/card/Card'
 import Modal from 'antd/es/modal/Modal'
 import { useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { deleteTask, editTask } from '../../redux/slice/slice'
+import type { AppDispatch } from '../../redux/store/store'
+import { deleteTaskApi, editTaskApi } from '../../thunks/taskThunks'
 import { AddTaskForm } from '../AddTaskForm/AddTaskForm'
 import type { ITask } from './types'
 
 export const Task = ({ id, title, description, status, date }: ITask) => {
 	const [isOpen, setIsOpen] = useState<boolean>(false)
-	const dispatch = useDispatch()
+	const dispatch = useDispatch<AppDispatch>()
 
 	const handleCancel = () => setIsOpen(false)
 	const handleShow = () => setIsOpen(true)
-	const handleDelete = () => dispatch(deleteTask(id))
+	const handleDelete = () => dispatch(deleteTaskApi(id))
 	const handleSubmit = (values: ITask) => {
-		dispatch(editTask({ ...values, id }))
-		setIsOpen(false)
+		dispatch(editTaskApi({ ...values, id }))
+		window.location.reload()
 	}
 	const formRef = useRef<{ submit: () => void }>(null)
 

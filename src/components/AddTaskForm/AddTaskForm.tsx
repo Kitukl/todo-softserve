@@ -1,6 +1,7 @@
 import { DatePicker, Form, Input, Select } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import TextArea from 'antd/es/input/TextArea'
+import dayjs from 'dayjs'
 import { forwardRef, useEffect, useImperativeHandle } from 'react'
 import type { ITask } from '../Task/types'
 
@@ -17,7 +18,7 @@ export const AddTaskForm = forwardRef(
 			if (initialValues) {
 				form.setFieldsValue({
 					...initialValues,
-					date: initialValues.date ? initialValues.date : undefined,
+					date: initialValues.date ? dayjs(initialValues.date) : undefined,
 				})
 			} else {
 				form.resetFields()

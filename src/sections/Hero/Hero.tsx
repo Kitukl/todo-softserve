@@ -1,25 +1,25 @@
 import { FloatButton, Modal } from 'antd'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AddTaskForm } from '../../components/AddTaskForm'
 import { SearchSection } from '../../components/SearchSection'
 import { StatusSection } from '../../components/StatusSection'
 import { Task } from '../../components/Task'
 import type { ITask } from '../../components/Task/types'
-import { addTask } from '../../redux/slice/slice'
-import type { RootState } from '../../redux/store/store'
+import type { AppDispatch, RootState } from '../../redux/store/store'
+import { createTask, fetchTasks } from '../../thunks/taskThunks'
 
 export const Hero = () => {
 	const formRef = useRef<{ submit: () => void }>(null)
 	const [isOpen, setIsOpen] = useState(false)
-	const dispatch = useDispatch()
+	const dispatch = useDispatch<AppDispatch>()
 
 	const handleShow = () => setIsOpen(true)
 	const handleCancel = () => setIsOpen(false)
 
 	const handleSubmit = (values: ITask) => {
-		dispatch(addTask({ ...values, id: Date.now().toString() }))
-		setIsOpen(false)
+		dispatch(createTask(values))
+		window.location.reload()
 	}
 
 	const { tasks, filters } = useSelector((state: RootState) => state.tasks)
@@ -34,6 +34,10 @@ export const Hero = () => {
 				new Date(filters.date).toDateString()
 		return matchesText && matchesDate
 	})
+
+	useEffect(() => {
+		dispatch(fetchTasks())
+	}, [dispatch])
 
 	return (
 		<section className='w-full flex mt-[10rem] flex-col justify-evenly gap-15'>
