@@ -1,3 +1,4 @@
+import { message } from 'antd'
 import Card from 'antd/es/card/Card'
 import Modal from 'antd/es/modal/Modal'
 import { useRef, useState } from 'react'
@@ -9,11 +10,21 @@ import type { ITask } from './types'
 
 export const Task = ({ id, title, description, status, date }: ITask) => {
 	const [isOpen, setIsOpen] = useState<boolean>(false)
+	const [isDelete, setIsDelete] = useState<boolean>(false)
+	const [messageApi, contextHolder] = message.useMessage()
 	const dispatch = useDispatch<AppDispatch>()
+
+	const info = () => {
+		messageApi.info(`Завдання "${title}" було успішно видалено!`)
+	}
 
 	const handleCancel = () => setIsOpen(false)
 	const handleShow = () => setIsOpen(true)
-	const handleDelete = () => dispatch(deleteTaskApi(id))
+	const handleDelete = () => {
+		dispatch(deleteTaskApi(id))
+		setIsDelete(false)
+		info()
+	}
 	const handleSubmit = (values: ITask) => {
 		dispatch(editTaskApi({ ...values, id }))
 		window.location.reload()
@@ -22,13 +33,14 @@ export const Task = ({ id, title, description, status, date }: ITask) => {
 
 	return (
 		<div className='w-[20rem]'>
+			{contextHolder}
 			<Card title={title} variant='outlined'>
 				<div className='flex flex-col gap-3'>
 					<div className='line-clamp-2'>{description}</div>
 					<div className='flex flex-row gap-10'>
 						<span
 							className='text-red-500 hover:text-red-800 duration-350 hover:cursor-pointer'
-							onClick={handleDelete}
+							onClick={() => setIsDelete(true)}
 						>
 							Видалити
 						</span>
@@ -55,6 +67,15 @@ export const Task = ({ id, title, description, status, date }: ITask) => {
 					initialValues={{ id, title, description, status, date }}
 				/>
 			</Modal>
+			<Modal
+				title={`Дійсно бажаєте видалити завдання "${title}" ?`}
+				open={isDelete}
+				onOk={handleDelete}
+				onCancel={() => setIsDelete(false)}
+				okText='Так'
+				cancelText='Ні'
+				okButtonProps={{ danger: true }}
+			></Modal>
 		</div>
 	)
 }
