@@ -2,8 +2,10 @@ import { DatePicker, Form, Input, Select } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import TextArea from 'antd/es/input/TextArea'
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 import { forwardRef, useEffect, useImperativeHandle } from 'react'
 import type { ITask } from '../Task/types'
+dayjs.extend(utc)
 
 interface AddTaskFormProps {
 	submit: (values: ITask) => void
@@ -26,7 +28,11 @@ export const AddTaskForm = forwardRef(
 		}, [initialValues, form])
 
 		const handleFinish = (values: ITask) => {
-			submit(values)
+			const formattedValues = {
+				...values,
+				date: dayjs(values.date).add(1, 'day').toDate(),
+			}
+			submit(formattedValues)
 			form.resetFields()
 		}
 
